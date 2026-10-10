@@ -5,9 +5,11 @@
 โปรเจกต์นี้พัฒนาด้วย Python และ FastAPI โดยนำภาพที่รวบรวมได้มาเก็บไว้ในคลังภาพภายในเครื่อง จากนั้นใช้โมเดลตรวจจับและสร้างเวกเตอร์คุณลักษณะของใบหน้าเพื่อเปรียบเทียบกับภาพอ้างอิง และจัดเรียงภาพผลลัพธ์ตามค่าความคล้ายคลึง
 
 > **หมายเหตุ:** ระบบนี้ค้นหาจากภาพที่อยู่ในคลังภาพที่รวบรวมไว้แล้ว ไม่ใช่การค้นหารูปภาพจากอินเทอร์เน็ตทั้งหมดแบบเรียลไทม์ ผลการเปรียบเทียบเป็นเพียงการจัดอันดับความคล้ายคลึง ไม่ใช่การยืนยันตัวบุคคล
+<img width="1894" height="922" alt="image" src="https://github.com/user-attachments/assets/11a488ca-41c6-4875-9fbe-34675eb7b4b0" />
+<img width="1889" height="940" alt="image" src="https://github.com/user-attachments/assets/b10aa87e-a386-4954-a328-5677e22f09c0" />
 <img width="1894" height="945" alt="image" src="https://github.com/user-attachments/assets/dcfaf5fb-2a1a-45d9-8c66-7e58050b0e7b" />
 <img width="1885" height="557" alt="image" src="https://github.com/user-attachments/assets/26d1373f-b10c-43e1-974a-da08e49bda2f" />
-<img width="1885" height="557" alt="image" src="https://github.com/user-attachments/assets/c4aaa509-9e4d-48c2-a4d4-060dc2253992" />
+
 
 
 ---
