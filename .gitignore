@@ -1,0 +1,26 @@
+# Python
+
+**pycache**/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Temporary uploads and generated results
+
+uploads/*
+results/*
+!uploads/.gitkeep
+!results/.gitkeep
+
+# Downloaded image gallery and generated image index
+
+data/gallery/*
+data/*index*
+data/*cache*
+
+# OS and editor files
+
+.DS_Store
+Thumbs.db
+.vscode/

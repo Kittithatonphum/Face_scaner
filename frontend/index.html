@@ -1,0 +1,650 @@
+```html
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10131b">
+  <title>VisionFind | Image Search</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #10131b;
+      --surface: #191e29;
+      --surface-2: #202737;
+      --border: #30394b;
+      --accent: #9b8cff;
+      --accent-hover: #b2a7ff;
+      --text: #f4f5fb;
+      --muted: #a1abc0;
+      --success: #7ee0bd;
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 10% 0%, #28214a 0, transparent 34%),
+        radial-gradient(ellipse at 95% 20%, #192d43 0, transparent 30%),
+        var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px clamp(18px, 5vw, 72px);
+      border-bottom: 1px solid #ffffff12;
+      background: #10131bba;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: .5px;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #a99aff, #6f8dff);
+      color: #111322;
+      font-size: 22px;
+    }
+
+    .brand-name span {
+      color: var(--accent);
+    }
+
+    .api-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--success);
+      font-size: 13px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 12px currentColor;
+    }
+
+    main {
+      width: min(1080px, calc(100% - 32px));
+      margin: 48px auto 64px;
+    }
+
+    .hero {
+      margin-bottom: 30px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 12px 0;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.12;
+      letter-spacing: -1.5px;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .description {
+      max-width: 650px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, .7fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .panel {
+      min-width: 0;
+      padding: 24px;
+      background: linear-gradient(145deg, #1c2230, #161b25);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 50px #00000018;
+    }
+
+    .section-title {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .section-description {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .drop-zone {
+      display: flex;
+      min-height: 230px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      border: 1px dashed #626a88;
+      border-radius: 15px;
+      background: #10141e80;
+      text-align: center;
+      transition: border-color .2s, background .2s;
+    }
+
+    .drop-zone:focus-within,
+    .drop-zone:hover {
+      border-color: var(--accent);
+      background: #a99aff0b;
+    }
+
+    .upload-icon {
+      display: grid;
+      place-items: center;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 14px;
+      border-radius: 17px;
+      background: #a99aff1c;
+      color: var(--accent);
+      font-size: 28px;
+    }
+
+    .drop-zone strong {
+      margin-bottom: 8px;
+    }
+
+    .drop-zone small {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      max-width: 340px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    input[type="file"]::file-selector-button {
+      padding: 9px 12px;
+      margin-right: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .preview-wrap {
+      display: none;
+      width: 100%;
+      margin-top: 18px;
+    }
+
+    .preview-wrap.visible {
+      display: block;
+    }
+
+    .preview-wrap img {
+      display: block;
+      max-width: 100%;
+      max-height: 220px;
+      margin: 0 auto;
+      border-radius: 12px;
+      object-fit: contain;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      background: #10141e;
+      color: var(--text);
+    }
+
+    .search-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 22px;
+      padding: 14px 18px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--accent);
+      color: #111322;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+
+    .search-button:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .search-button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .privacy-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    #message {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .results-section {
+      margin-top: 38px;
+    }
+
+    .results-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .results-heading h2 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    #resultCount {
+      padding: 7px 11px;
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 16px;
+    }
+
+    .result-image {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      display: block;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      transition: transform .2s, border-color .2s;
+    }
+
+    .result-image:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 42px 20px;
+      border: 1px dashed var(--border);
+      border-radius: 15px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    .empty-icon {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--accent);
+      font-size: 30px;
+    }
+
+    footer {
+      padding: 24px 16px;
+      border-top: 1px solid #ffffff12;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 700px) {
+      main {
+        margin-top: 32px;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+
+      .results-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .topbar {
+        padding: 15px 18px;
+      }
+
+      .brand {
+        font-size: 17px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">⌕</div>
+      <div class="brand-name">VISION<span>FIND</span></div>
+    </div>
+
+    <div class="api-status">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span>Image Search</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">Visual Search Workspace</div>
+      <h1>ค้นหาภาพด้วย <span>AI</span></h1>
+      <p class="description">
+        อัปโหลดภาพอ้างอิงเพื่อค้นหารูปภาพที่มีลักษณะใบหน้าคล้ายกัน
+        จากคลังภาพที่ระบบเตรียมไว้
+      </p>
+    </section>
+
+    <form id="searchForm">
+      <div class="workspace">
+        <section class="panel">
+          <h2 class="section-title">01 / ภาพอ้างอิง</h2>
+          <p class="section-description">
+            เลือกภาพที่ต้องการใช้เป็นต้นแบบสำหรับการค้นหา
+          </p>
+
+          <div class="drop-zone">
+            <div class="upload-icon" aria-hidden="true">＋</div>
+            <strong>เลือกภาพจากอุปกรณ์ของคุณ</strong>
+            <small>รองรับ JPG, PNG, WEBP และ BMP<br>ขนาดไฟล์สูงสุด 10 MB</small>
+
+            <input
+              id="imageFile"
+              name="file"
+              type="file"
+              accept=".jpg,.jpeg,.png,.webp,.bmp"
+              required
+            >
+
+            <div id="previewWrap" class="preview-wrap">
+              <img id="previewImage" alt="ตัวอย่างภาพที่เลือก">
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2 class="section-title">02 / ตั้งค่าการค้นหา</h2>
+          <p class="section-description">
+            เลือกจำนวนภาพสูงสุดที่ต้องการให้ระบบส่งกลับ
+          </p>
+
+          <label class="field-label" for="limit">จำนวนรูปภาพ</label>
+          <select id="limit" name="limit">
+            <option value="10">10 ภาพ</option>
+            <option value="20" selected>20 ภาพ</option>
+            <option value="50">50 ภาพ</option>
+            <option value="100">100 ภาพ</option>
+          </select>
+
+          <button id="searchButton" class="search-button" type="submit">
+            <span aria-hidden="true">⌕</span>
+            <span id="buttonText">เริ่มค้นหาภาพ</span>
+          </button>
+
+          <p id="message" role="status" aria-live="polite">
+            พร้อมค้นหา กรุณาเลือกภาพอ้างอิงก่อนเริ่มต้น
+          </p>
+
+          <p class="privacy-note">
+            ควรใช้ภาพที่ได้รับอนุญาตสำหรับการทดสอบเท่านั้น
+            ผลการค้นหาแสดงความคล้ายของภาพ ไม่ใช่การยืนยันตัวบุคคล
+          </p>
+        </section>
+      </div>
+    </form>
+
+    <section class="results-section">
+      <div class="results-heading">
+        <h2>ภาพที่ค้นพบ</h2>
+        <span id="resultCount">0 ภาพ</span>
+      </div>
+
+      <div id="results" class="results-grid">
+        <div class="empty-state">
+          <span class="empty-icon" aria-hidden="true">▧</span>
+          ผลลัพธ์จะแสดงที่นี่หลังจากค้นหาเสร็จสิ้น
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    VISIONFIND · ระบบค้นหาภาพเพื่อการศึกษา
+  </footer>
+
+  <script>
+    const form = document.getElementById("searchForm");
+    const fileInput = document.getElementById("imageFile");
+    const searchButton = document.getElementById("searchButton");
+    const buttonText = document.getElementById("buttonText");
+    const message = document.getElementById("message");
+    const resultsBox = document.getElementById("results");
+    const resultCount = document.getElementById("resultCount");
+    const previewWrap = document.getElementById("previewWrap");
+    const previewImage = document.getElementById("previewImage");
+
+    let previewUrl = null;
+
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files[0];
+
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+      }
+
+      if (!file) {
+        previewWrap.classList.remove("visible");
+        previewImage.removeAttribute("src");
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        fileInput.value = "";
+        previewWrap.classList.remove("visible");
+        message.textContent = "ไฟล์มีขนาดเกิน 10 MB กรุณาเลือกไฟล์ใหม่";
+        return;
+      }
+
+      previewUrl = URL.createObjectURL(file);
+      previewImage.src = previewUrl;
+      previewWrap.classList.add("visible");
+      message.textContent = "เลือกภาพแล้ว พร้อมเริ่มค้นหา";
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const file = fileInput.files[0];
+
+      if (!file) {
+        message.textContent = "กรุณาเลือกภาพอ้างอิงก่อน";
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        message.textContent = "ไฟล์มีขนาดเกิน 10 MB";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      searchButton.disabled = true;
+      buttonText.textContent = "กำลังค้นหา...";
+      message.textContent = "กำลังวิเคราะห์ภาพ กรุณารอสักครู่";
+      resultCount.textContent = "กำลังค้นหา...";
+      resultsBox.replaceChildren();
+
+      try {
+        const limit = document.getElementById("limit").value;
+        const response = await fetch(`/api/search?limit=${limit}`, {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            typeof data.detail === "string"
+              ? data.detail
+              : "เกิดข้อผิดพลาดในการค้นหา"
+          );
+        }
+
+        const items = Array.isArray(data.results) ? data.results : [];
+        resultCount.textContent = `${items.length} ภาพ`;
+        message.textContent = data.message || "ค้นหาเสร็จสิ้น";
+
+        if (items.length === 0) {
+          showEmpty("ไม่พบภาพในคลังภาพที่ตรงกับเงื่อนไขการค้นหา");
+          return;
+        }
+
+        for (const item of items) {
+          if (!item.image_url) continue;
+
+          const image = document.createElement("img");
+          image.className = "result-image";
+          image.src = item.image_url;
+          image.alt = "ภาพผลการค้นหา";
+          image.loading = "lazy";
+          image.decoding = "async";
+
+          image.addEventListener("error", () => {
+            image.remove();
+          }, { once: true });
+
+          resultsBox.appendChild(image);
+        }
+
+        if (resultsBox.children.length === 0) {
+          showEmpty("ไม่สามารถโหลดรูปผลลัพธ์ได้");
+        }
+      } catch (error) {
+        message.textContent =
+          error instanceof Error
+            ? error.message
+            : "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
+
+        resultCount.textContent = "0 ภาพ";
+        showEmpty("ไม่สามารถค้นหาได้ กรุณาตรวจสอบว่า Backend กำลังทำงานอยู่");
+      } finally {
+        searchButton.disabled = false;
+        buttonText.textContent = "เริ่มค้นหาภาพ";
+      }
+    });
+
+    function showEmpty(text) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+
+      const icon = document.createElement("span");
+      icon.className = "empty-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = "▧";
+
+      const description = document.createElement("div");
+      description.textContent = text;
+
+      empty.append(icon, description);
+      resultsBox.replaceChildren(empty);
+    }
+
+    window.addEventListener("beforeunload", () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    });
+  </script>
+</body>
+</html>
+```
